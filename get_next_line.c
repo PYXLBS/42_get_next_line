@@ -1,10 +1,10 @@
 #include "get_next_line.h"
 
-static char	*free_reset_return(char **to_res, char *res_to, char *to_ret)
+static char	*free_reset_return(char **to_reset, char *reset_to, char *to_return)
 {
-	free(*to_res);
-	*to_res = res_to;
-	return (to_ret);
+	free(*to_reset);
+	*to_reset = reset_to;
+	return (to_return);
 }
 
 static int	read_all(int fd, char **buffer)

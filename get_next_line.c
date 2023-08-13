@@ -75,6 +75,13 @@ int	ft_update_all(char **buffer, char **line)
 	}
 }
 
+char	*reset_buffer(char **buffer)
+{
+	free(*buffer);
+	*buffer = NULL;
+	return (*buffer);
+}
+
 char	*get_next_line(int fd)
 {
 	static char	*buffer;
@@ -89,26 +96,14 @@ char	*get_next_line(int fd)
 		if (bytes_read <= 0)
 		{
 			if (bytes_read == -1)
-			{
-				free(buffer);
-				buffer = NULL;
-				return (buffer);
-			}
+				return (reset_buffer(&buffer));
 			break ;
 		}
 	}
 	if (bytes_read == 0 && *buffer == '\0')
-	{
-		free(buffer);
-		buffer = NULL;
-		return (buffer);
-	}
+		return (reset_buffer(&buffer));
 	line = NULL;
 	if (ft_update_all(&buffer, &line) == -1)
-	{
-		free(buffer);
-		buffer = NULL;
-		return (buffer);
-	}
+		return (reset_buffer(&buffer));
 	return (line);
 }

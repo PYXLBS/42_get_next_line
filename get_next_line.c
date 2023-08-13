@@ -1,13 +1,13 @@
 #include "get_next_line.h"
 
-static char	*ft_free_reset_return(char **to_res, char *res_to, char *to_ret)
+static char	*free_reset_return(char **to_res, char *res_to, char *to_ret)
 {
 	free(*to_res);
 	*to_res = res_to;
 	return (to_ret);
 }
 
-static int	ft_read_all(int fd, char **buffer)
+static int	read_all(int fd, char **buffer)
 {
 	char	*temp_var;
 	char	*temp_buffer;
@@ -19,22 +19,22 @@ static int	ft_read_all(int fd, char **buffer)
 	bytes_read = read(fd, temp_var, BUFFER_SIZE);
 	if (bytes_read <= 0)
 	{
-		ft_free_reset_return(&temp_var, NULL, NULL);
+		free_reset_return(&temp_var, NULL, NULL);
 		return (bytes_read);
 	}
 	temp_var[bytes_read] = '\0';
 	if (*buffer != NULL)
 	{
 		temp_buffer = ft_strjoin(*buffer, temp_var);
-		ft_free_reset_return(buffer, temp_buffer, NULL);
+		free_reset_return(buffer, temp_buffer, NULL);
 	}
 	else
 		*buffer = ft_strjoin("", temp_var);
-	ft_free_reset_return(&temp_var, NULL, NULL);
+	free_reset_return(&temp_var, NULL, NULL);
 	return (bytes_read);
 }
 
-static int	ft_handle_newline(char **buffer, char **line, char *chr)
+static int	handle_newline(char **buffer, char **line, char *chr)
 {
 	char	*temp_buffer;
 
@@ -45,7 +45,7 @@ static int	ft_handle_newline(char **buffer, char **line, char *chr)
 			return (-1);
 		(*line)[0] = '\n';
 		temp_buffer = ft_strjoin(chr + 1, "");
-		ft_free_reset_return(buffer, temp_buffer, NULL);
+		free_reset_return(buffer, temp_buffer, NULL);
 	}
 	else
 	{
@@ -55,14 +55,14 @@ static int	ft_handle_newline(char **buffer, char **line, char *chr)
 		ft_strlcat(*line, *buffer, chr - *buffer + 1);
 		(*line)[chr - *buffer] = '\n';
 		temp_buffer = ft_strjoin(chr + 1, "");
-		ft_free_reset_return(buffer, temp_buffer, NULL);
+		free_reset_return(buffer, temp_buffer, NULL);
 	}
 	if (*buffer != NULL && *buffer[0] == '\0')
-		ft_free_reset_return(buffer, NULL, NULL);
+		free_reset_return(buffer, NULL, NULL);
 	return (1);
 }
 
-static int	ft_update_all(char **buffer, char **line)
+static int	update_all(char **buffer, char **line)
 {
 	char	*chr;
 
@@ -70,11 +70,11 @@ static int	ft_update_all(char **buffer, char **line)
 		return (0);
 	chr = ft_strchr(*buffer, '\n');
 	if (chr != NULL)
-		return (ft_handle_newline(buffer, line, chr));
+		return (handle_newline(buffer, line, chr));
 	else
 	{
 		*line = ft_strjoin(*buffer, "");
-		ft_free_reset_return(buffer, NULL, NULL);
+		free_reset_return(buffer, NULL, NULL);
 		return (0);
 	}
 }
@@ -89,18 +89,18 @@ char	*get_next_line(int fd)
 		buffer = ft_calloc(1, 1);
 	while (buffer != NULL && ft_strchr(buffer, '\n') == NULL)
 	{
-		bytes_read = ft_read_all(fd, &buffer);
+		bytes_read = read_all(fd, &buffer);
 		if (bytes_read <= 0)
 		{
 			if (bytes_read == -1)
-				return (ft_free_reset_return(&buffer, NULL, NULL));
+				return (free_reset_return(&buffer, NULL, NULL));
 			break ;
 		}
 	}
 	if (bytes_read == 0 && *buffer == '\0')
-		return (ft_free_reset_return(&buffer, NULL, NULL));
+		return (free_reset_return(&buffer, NULL, NULL));
 	line = NULL;
-	if (ft_update_all(&buffer, &line) == -1)
-		return (ft_free_reset_return(&buffer, NULL, NULL));
+	if (update_all(&buffer, &line) == -1)
+		return (free_reset_return(&buffer, NULL, NULL));
 	return (line);
 }

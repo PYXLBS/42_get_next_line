@@ -1,6 +1,6 @@
 #include "get_next_line.h"
 
-int	ft_read_all(int fd, char **buffer)
+static int	ft_read_all(int fd, char **buffer)
 {
 	char	*temp_var;
 	char	*temp_buffer;
@@ -28,7 +28,7 @@ int	ft_read_all(int fd, char **buffer)
 	return (bytes_read);
 }
 
-int	ft_update_all(char **buffer, char **line)
+static int	ft_update_all(char **buffer, char **line)
 {
 	char	*chr;
 	char	*temp_buffer;
@@ -75,7 +75,7 @@ int	ft_update_all(char **buffer, char **line)
 	}
 }
 
-char	*reset_buffer(char **buffer)
+static char	*reset_buffer(char **buffer)
 {
 	free(*buffer);
 	*buffer = NULL;

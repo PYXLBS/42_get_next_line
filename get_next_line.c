@@ -17,7 +17,7 @@ static int	read_and_add(int fd, char **buffer)
 	if (buffer == NULL || new_data == NULL)
 		return (-1);
 	bytes_read = read(fd, new_data, BUFFER_SIZE);
-	if (bytes_read <= 0)
+	if (bytes_read < 1)
 	{
 		free_reset_return(&new_data, NULL, NULL);
 		return (bytes_read);
@@ -90,7 +90,7 @@ char	*get_next_line(int fd)
 	while (buffer != NULL && ft_strchr(buffer, '\n') == NULL)
 	{
 		bytes_read = read_and_add(fd, &buffer);
-		if (bytes_read <= 0)
+		if (bytes_read < 1)
 		{
 			if (bytes_read == -1)
 				return (free_reset_return(&buffer, NULL, NULL));

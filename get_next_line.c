@@ -7,7 +7,7 @@ static char	*free_reset_return(char **to_reset, char *reset_to, char *to_return)
 	return (to_return);
 }
 
-static int	read_all(int fd, char **buffer)
+static int	read_and_add(int fd, char **buffer)
 {
 	char	*new_data;
 	int		bytes_read;
@@ -89,7 +89,7 @@ char	*get_next_line(int fd)
 		buffer = ft_calloc(1, 1);
 	while (buffer != NULL && ft_strchr(buffer, '\n') == NULL)
 	{
-		bytes_read = read_all(fd, &buffer);
+		bytes_read = read_and_add(fd, &buffer);
 		if (bytes_read <= 0)
 		{
 			if (bytes_read == -1)

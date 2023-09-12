@@ -81,26 +81,26 @@ static int	update_all(char **buffer, char **line)
 
 char	*get_next_line(int fd)
 {
-	static char	*buffer;
+	static char	*buffer[BUFFER_SIZE + 1];
 	int			bytes_read;
 	char		*line;
 
-	if (buffer == NULL)
-		buffer = ft_calloc(1, 1);
-	while (buffer != NULL && ft_strchr(buffer, '\n') == NULL)
+	if (buffer[fd] == NULL)
+		buffer[fd] = ft_calloc(1, 1);
+	while (buffer[fd] != NULL && ft_strchr(buffer[fd], '\n') == NULL)
 	{
-		bytes_read = read_and_add(fd, &buffer);
+		bytes_read = read_and_add(fd, &buffer[fd]);
 		if (bytes_read < 1)
 		{
 			if (bytes_read == -1)
-				return (free_reset_return(&buffer, NULL, NULL));
+				return (free_reset_return(&buffer[fd], NULL, NULL));
 			break ;
 		}
 	}
-	if (bytes_read == 0 && *buffer == '\0')
-		return (free_reset_return(&buffer, NULL, NULL));
+	if (bytes_read == 0 && *buffer[fd] == '\0')
+		return (free_reset_return(&buffer[fd], NULL, NULL));
 	line = NULL;
-	if (update_all(&buffer, &line) == -1)
-		return (free_reset_return(&buffer, NULL, NULL));
+	if (update_all(&buffer[fd], &line) == -1)
+		return (free_reset_return(&buffer[fd], NULL, NULL));
 	return (line);
 }

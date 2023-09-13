@@ -31,7 +31,7 @@ void	update_all(char *buffer, char *line)
 
 char	*get_next_line(int fd)
 {
-	static char	buffer[1024][BUFFER_SIZE + 1];
+	static char	buffer[FOPEN_MAX][BUFFER_SIZE + 1];
 	int			bytes_read;
 	char		*line;
 

@@ -1,8 +1,10 @@
 getnextline
 
+
 get
 next
 line
+
 
 g
 e
@@ -15,4 +17,3 @@ l
 i
 n
 e
-

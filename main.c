@@ -4,7 +4,7 @@ int	main(void)
 {
 	int		fd;
 	int		i = 0;
-	int		number_of_lines = 15;
+	int		number_of_lines = 20;
 	char	*str;
 
 	fd = open("./gnl.txt", O_RDONLY);

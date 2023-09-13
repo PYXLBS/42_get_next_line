@@ -8,7 +8,7 @@ int	main(void)
 	int		i = 0;
 	int		j = 0;
 	int		k = 0;
-	int		number_of_lines = 12;
+	int		number_of_lines = 20;
 	char	*str;
 
 	fd = open("./gnl_1.txt", O_RDONLY);

@@ -8,7 +8,7 @@ int	main(void)
 	int		number_of_lines = 15;
 	char	*str;
 
-	fd = open("./iltes.txt", O_RDONLY);
+	fd = open("./gnl.txt", O_RDONLY);
 	if (fd >= 0)
 	{
 		while (i < number_of_lines)

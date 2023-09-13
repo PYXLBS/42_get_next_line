@@ -1,108 +1,57 @@
-#include "get_next_line_bonus.h"
+#include "get_next_line.h"
 
-static char	*free_reset_return(char **to_reset, char *reset_to, char *to_return)
+char	*free_reset_return(char *to_reset, char *reset_to, char *to_return)
 {
-	free(*to_reset);
-	*to_reset = reset_to;
+	if (to_reset != NULL)
+		free(to_reset);
+	to_reset = reset_to;
 	return (to_return);
 }
 
-static int	read_and_add(int fd, char **buffer)
+void	update_all(char *buffer, char *line)
 {
-	char	*new_data;
-	int		bytes_read;
-	char	*joined_buffer;
+	size_t	i;
+	size_t	j;
 
-	new_data = ft_calloc((BUFFER_SIZE + 1), 1);
-	if (*buffer == NULL || new_data == NULL)
-		return (-1);
-	bytes_read = read(fd, new_data, BUFFER_SIZE);
-	if (bytes_read < 1)
+	i = 0;
+	j = 0;
+	while (line[i] != '\0' && line[i] != '\n')
+		i++;
+	if (line[i] == '\n')
+		i++;
+	while (line[i] != '\0')
 	{
-		free_reset_return(&new_data, NULL, NULL);
-		return (bytes_read);
+		buffer[j] = line[i];
+		line[i] = '\0';
+		i++;
+		j++;
 	}
-	new_data[bytes_read] = '\0';
-	if (*buffer != NULL)
-	{
-		joined_buffer = ft_strjoin(*buffer, new_data);
-		free_reset_return(buffer, joined_buffer, NULL);
-	}
-	else
-		*buffer = ft_strjoin("", new_data);
-	free_reset_return(&new_data, NULL, NULL);
-	return (bytes_read);
-}
-
-static int	handle_newline(char **buffer, char **line, char *newline)
-{
-	char	*joined_buffer;
-
-	if (newline == *buffer)
-	{
-		*line = ft_calloc(2, 1);
-		if (*line == NULL)
-			return (-1);
-		(*line)[0] = '\n';
-		joined_buffer = ft_strjoin(newline + 1, "");
-		free_reset_return(buffer, joined_buffer, NULL);
-	}
-	else
-	{
-		*line = ft_calloc(newline - *buffer + 2, 1);
-		if (*line == NULL)
-			return (-1);
-		ft_strlcat(*line, *buffer, newline - *buffer + 1);
-		(*line)[newline - *buffer] = '\n';
-		joined_buffer = ft_strjoin(newline + 1, "");
-		free_reset_return(buffer, joined_buffer, NULL);
-	}
-	if (*buffer != NULL && *buffer[0] == '\0')
-		free_reset_return(buffer, NULL, NULL);
-	return (1);
-}
-
-static int	update_all(char **buffer, char **line)
-{
-	char	*newline;
-
-	if (*buffer == NULL)
-		return (0);
-	newline = ft_strchr(*buffer, '\n');
-	if (newline != NULL)
-		return (handle_newline(buffer, line, newline));
-	else
-	{
-		*line = ft_strjoin(*buffer, "");
-		free_reset_return(buffer, NULL, NULL);
-		return (0);
-	}
+	buffer[j] = '\0';
 }
 
 char	*get_next_line(int fd)
 {
-	static char	*buffer[1024][BUFFER_SIZE + 1];
+	static char	buffer[1024][BUFFER_SIZE + 1];
 	int			bytes_read;
 	char		*line;
 
-	if (fd < 0 || fd > 1023)
+	if (fd < 0 || fd > 1024 || BUFFER_SIZE <= 0 || read(fd, NULL, 0) < 0)
 		return (NULL);
-	if (buffer[fd] == NULL)
-		buffer[fd] = ft_calloc(1, 1);
-	while (buffer[fd] != NULL && ft_strchr(*buffer[fd], '\n') == NULL)
-	{
-		bytes_read = read_and_add(fd, buffer[fd]);
-		if (bytes_read < 1)
-		{
-			if (bytes_read == -1)
-				return (free_reset_return(buffer[fd], NULL, NULL));
-			break ;
-		}
-	}
-	if (bytes_read == 0 && buffer[fd] != NULL && *buffer[fd] == NULL)
-		return (free_reset_return(buffer[fd], NULL, NULL));
+	bytes_read = BUFFER_SIZE;
 	line = NULL;
-	if (update_all(buffer[fd], &line) == -1)
-		return (free_reset_return(buffer[fd], NULL, NULL));
+	line = ft_strjoin(line, buffer[fd]);
+	while (ft_strchr(buffer[fd], '\n') == NULL && bytes_read == BUFFER_SIZE)
+	{
+		bytes_read = read(fd, buffer[fd], BUFFER_SIZE);
+		if (bytes_read == -1)
+			return (free_reset_return(line, NULL, NULL));
+		buffer[fd][bytes_read] = '\0';
+		line = ft_strjoin(line, buffer[fd]);
+		if (line == NULL)
+			return (line);
+	}
+	if (line[0] == '\0')
+		return (free_reset_return(line, NULL, NULL));
+	update_all(buffer[fd], line);
 	return (line);
 }

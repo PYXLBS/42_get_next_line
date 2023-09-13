@@ -18,7 +18,7 @@ size_t	ft_strlen(const char *s)
 	size_t	i;
 
 	i = 0;
-	while (s[i] != '\0')
+	while (s != NULL && s[i] != '\0')
 		i++;
 	return (i);
 }
@@ -71,24 +71,24 @@ void	*ft_calloc(size_t nmemb, size_t size)
 	return (s);
 }
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*ft_strjoin(char *s1, char *s2)
 {
 	size_t	i1;
 	size_t	i2;
 	char	*s3;
-	char	*ptr;
+	char	*ptr_1;
+	char	*ptr_3;
 
-	if (s1 == NULL || s2 == NULL)
-		return (NULL);
 	i1 = ft_strlen(s1);
 	i2 = ft_strlen(s2);
 	s3 = ft_calloc(i1 + i2 + 1, 1);
 	if (s3 == NULL)
 		return (NULL);
-	ptr = s3;
-	while (*s1 != '\0')
-		*ptr++ = *s1++;
-	while (*s2 != '\0')
-		*ptr++ = *s2++;
-	return (s3);
+	ptr_1 = s1;
+	ptr_3 = s3;
+	while (s1 != NULL && *s1 != '\0')
+		*ptr_3++ = *s1++;
+	while (s2 != NULL && *s2 != '\0')
+		*ptr_3++ = *s2++;
+	return (free_reset_return(ptr_1, NULL, s3));
 }
